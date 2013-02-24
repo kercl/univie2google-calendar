@@ -70,8 +70,23 @@ def main(argv):
 		
 		curc = Course(course_number, semester, language)
 		
+	print """BEGIN:VCALENDAR
+PRODID:univie2gcal
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Vienna:20130224T140000
+DTEND;TZID=Europe/Vienna:20130224T150000
+DESCRIPTION:
+LOCATION:Ludwig-Boltzmann-Hörsaal
+SUMMARY:Test
+TRANSP:OPAQUE"""
+
 		for ev in curc.events:
-			print ev
+			print ev.ToICalEvent()
+
+	print "END:VCALENDAR"
 
 if __name__ == "__main__":
    main(sys.argv[1:])
