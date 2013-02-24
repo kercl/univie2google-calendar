@@ -14,7 +14,7 @@ The command line tool does not support Google Calendar!
 
 Example:
 
-./univie2gcal -c "260080" -l "de" -s "S2013"
+./univie2ical -c "260080" -l "de" -s "S2013"
 
 DEPENDENCIES
 ============
