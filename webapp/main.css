@@ -1,0 +1,11 @@
+div.content {
+	border: 1px solid dimgrey;
+	margin-top: 20pt;
+	margin-left: 25%;
+	margin-right: 25%;
+	background-color: white;
+}
+
+body {
+	background-color: lightgrey
+}

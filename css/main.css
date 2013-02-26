@@ -1,0 +1,137 @@
+div.content {
+	border: 1px solid dimgrey;
+	margin-top: 20pt;
+	margin-left: 25%;
+	margin-right: 25%;
+	background-color: white;
+	padding: 20pt;
+}
+
+body {
+	background-color: lightgrey;
+	font-size: 10pt;
+}
+
+h1 {
+	font-size: 10pt;
+	font-weight: bold;
+	color: steelblue;
+	width:100%;
+	border-bottom:1px solid steelblue;
+	margin-bottom: 5pt
+}
+
+h2 {
+	font-size: 10pt;
+	font-weight: bold;
+	color: dimgrey;
+	width:100%;
+	border-bottom:1px solid lightgrey;
+	margin-bottom: 2pt
+}
+
+h3 {
+	font-size: 10pt;
+	font-weight: bold;
+	color: black;
+}
+
+input[type="text"] {
+	border: 1px solid dimgrey;
+	background-color: white
+}
+
+input[type="text"]:focus {
+	border: 1px solid steelblue;
+	background-color: white;
+	box-shadow: inset -6px 0px 0 0px lightsteelblue;
+	outline: none;
+}
+
+select {
+	border: 1px solid dimgrey;
+	background-color: white
+}
+
+select:focus {
+	border: 1px solid steelblue;
+	outline: none;
+}
+
+option::selection {
+	background: red; /* Safari */
+}
+
+input[type="submit"] {
+	border: 1px solid steelblue;
+	background-color: lightsteelblue
+}
+
+input[type="button"] {
+	border: 1px solid steelblue;
+	background-color: lightsteelblue
+}
+
+input[type="button"].close {
+	border: 1px solid steelblue;
+	background-color: lightsteelblue;
+	width:20pt;
+	height:20pt;
+}
+
+div.course {
+	background-color: white;
+	border: 1px solid steelblue;
+	margin-bottom: 5pt;
+	padding:5pt;
+}
+
+div.event {
+	background-color: white;
+	border: 1px solid lightgrey;
+	margin-bottom: 5pt;
+}
+
+div.course_head {
+	background-color: #E4F0FE;
+	border: none;
+	text-align: right;
+	padding: 2pt
+}
+
+div.error {
+	border: 1px solid darkred;
+	background-color: salmon;
+	color: darkred;
+	font-weight: bold;
+	width: 100%;
+	padding:5pt;
+	margin-left:-5pt;
+	margin-right:-5pt;
+	margin-bottom: 2pt;
+}
+
+.fade {
+	animation:fade 2s;
+	-moz-animation:fade 2s; /* Firefox */
+	-webkit-animation:fade 2s; /* Safari and Chrome */
+	-o-animation:fade 2s; /* Opera */
+}
+
+@-moz-keyframes fade /* Firefox */
+{
+0%   {opacity: 0;}
+100% {opacity: 1;}
+}
+
+@-webkit-keyframes fade /* Safari and Chrome */
+{
+0%   {opacity: 0;}
+100% {opacity: 1;}
+}
+
+@-o-keyframes fade /* Opera */
+{
+0%   {opacity: 0;}
+100% {opacity: 1;}
+}

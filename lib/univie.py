@@ -11,20 +11,22 @@ class Event:
 	T_REFERENCE = 2
 	T_RELATIVE = 3
 	
-	title = None
-	dateStart = None
-	recurrence = None
-	frequency = None
-	dateUntil = None
-	day = None
-	description = None
-	location = None
-	timeStart = None
-	timeEnd = None
-	
 	eventType = T_STANDALONE
 	
-	eventUID = None
+	def __init__(self):
+		self.title = None
+		self.dateStart = None
+		self.recurrence = None
+		self.frequency = None
+		self.dateUntil = None
+		self.day = None
+		self.description = None
+		self.location = None
+		self.timeStart = None
+		self.timeEnd = None
+		self.eventUID = None
+		self.specialEvent = None
+		
 
 	def time_to_str(self, arr, rfc3339 = False):
 		#print "TIME: " + str(arr) #DGG
@@ -66,11 +68,11 @@ class Event:
 		if self.eventUID != None:
 			event = event + "UID:" + self.eventUID + "\n"
 		
-		event = event + "SUMMARY:" + str(self.title) + "\n" + "END:VEVENT"
+		event = event + "SUMMARY:" + self.title + "\n" + "END:VEVENT"
 		return event
 	
 	def __str__(self):
-		ret = u"Event: \t\t" + str(self.title).decode('iso-8859-15') + u"\n"
+		ret = "Event: \t\t" + str(self.title).decode('iso-8859-15') + u"\n"
 		ret = ret + u"Date: \t\t" + self.date_to_str(self.dateStart) + u"\n"
 		ret = ret + u"Until: \t\t" + self.date_to_str(self.dateUntil) + u"\n"
 		ret = ret + u"Location: \t" + self.location + u"\n"
@@ -82,12 +84,6 @@ class Event:
 		return ret.encode("utf-8")
 
 class Course:
-	is_valid = None
-	
-	courseId = 0
-	
-	events = list()
-	
 	C_INIT = -1
 	C_DATE = 1
 	C_FREQ = 2
@@ -99,6 +95,8 @@ class Course:
 	C_IGNORE_UNTIL_DAY = 8
 	C_TIME = 9
 	C_END = 999
+	
+	C_SPECIAL_NOTE = 998
 	
 	parser_decisions = {-1 : (C_INIT, [0, 14]),
 						 0 : (C_DAY, [1,2,11,4,0]),
@@ -117,14 +115,6 @@ class Course:
 						 15: (C_TIME, [13]),
 						 16: (C_IGNORE_UNTIL_DAY, [C_END]),
 						 C_END: (C_END, [])}
-	
-	#private:
-	
-	current_meeting = {}
-	special_event = ""
-	date_until = False
-	is_reference = False
-	add_meeting = True
 	
 	def clean(self, arg, first_alphanum = False):
 		if len(arg) == 0:
@@ -152,12 +142,6 @@ class Course:
 	
 	def extract_content(self, page):
 		page = page.replace("&nbsp;", " ")
-		page = page.replace("&uuml;", "ü")
-		page = page.replace("&auml;", "ä")
-		page = page.replace("&ouml;", "ö")
-		page = page.replace("&Uuml;", "ü")
-		page = page.replace("&Auml;", "A")
-		page = page.replace("&Ouml;", "Ö")
 		
 		entry_pt = page.find('<div id="content">');
 		exit_pt = -1
@@ -177,8 +161,6 @@ class Course:
 		if page[entry_pt:exit_pt].find('<!-- vlvz_gruppe -->') != -1:
 			groups = page[entry_pt:exit_pt].split('<!-- vlvz_gruppe -->')
 		else:
-			f = open("tmp.xml", "w")
-			f.write('<?xml version="1.0" encoding="ISO-8859-15"?>\n' + page[entry_pt:exit_pt])
 			return [xml.fromstring('<?xml version="1.0" encoding="ISO-8859-15"?>\n' + page[entry_pt:exit_pt])]
 
 		res = list()
@@ -292,7 +274,7 @@ class Course:
 					self.date_until = True
 				elif t == 'Vorbesprechung:':
 					self.is_reference = True
-					self.special_event = t
+					self.current_meeting[self.C_SPECIAL_NOTE] = t
 		
 		for s in state[1]:
 			r = self.rec_parse(tokens, it + 1, s)
@@ -320,7 +302,7 @@ class Course:
 			nexti = self.rec_parse(tokens, nexti, -1)
 			
 			if nexti == None:
-				print "   [PARSER FAILED]" #DBG
+				#print "   [PARSER FAILED]" #DBG
 				return []
 			
 			if self.add_meeting:
@@ -332,6 +314,10 @@ class Course:
 		
 	
 	def parse_course_information(self, page):
+		if page.find('<!-- notfound -->') >= 0:
+			self.error = "course not found"
+			return
+		
 		content_groups = self.extract_content(page)
 		
 		if content_groups == None:
@@ -383,6 +369,8 @@ class Course:
 				if self.C_TIME_INTERVAL in pm:
 					ev.timeStart = pm[self.C_TIME_INTERVAL][0]
 					ev.timeEnd = pm[self.C_TIME_INTERVAL][1]
+				if self.C_SPECIAL_NOTE in pm:
+					ev.specialEvent = pm[self.C_SPECIAL_NOTE]
 				
 				if len(pm[self.C_DAY]) > 0:
 					for d in pm[self.C_DAY]:
@@ -398,6 +386,7 @@ class Course:
 						referenceEvent = ev
 					ev.eventUID = str(self.courseId) + "@" + str(id(ev))
 					self.events.append(ev)
+				
 			
 			if referenceEvent != None:
 				for e in self.events:
@@ -407,9 +396,22 @@ class Course:
 		return
 	
 	def __init__(self, cnr, sem, lang="de"):
+		self.is_valid = None
+		self.courseId = cnr
+		self.events = list()
+		
+		self.error = None
+		
+		#private:
+		
+		self.current_meeting = {}
+		self.special_event = ""
+		self.date_until = False
+		self.is_reference = False
+		self.add_meeting = True
+		
 		params = urllib.urlencode({'lang': lang, 
 		                           'semester' : sem,
 		                           'lvnr': cnr})
 		f = urllib.urlopen("http://online.univie.ac.at/vlvz?%s" % params)
-		self.courseId = cnr
-		self.parse_course_information(f.read())
+		self.parse_course_information(str(f.read()))
