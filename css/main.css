@@ -1,8 +1,9 @@
 div.content {
 	border: 1px solid dimgrey;
 	margin-top: 20pt;
-	margin-left: 25%;
-	margin-right: 25%;
+	margin-left: auto;
+	margin-right: auto;
+	width:700pt;
 	background-color: white;
 	padding: 20pt;
 }
@@ -10,15 +11,23 @@ div.content {
 body {
 	background-color: lightgrey;
 	font-size: 10pt;
+	font-family: sans-serif;
+	-webkit-perspective: 1000;
+	-webkit-backface-visibility: hidden;
+	-webkit-transform:translate3d(0,0,0);
+}
+
+td {
+	font-size: 10pt;
 }
 
 h1 {
 	font-size: 10pt;
 	font-weight: bold;
-	color: steelblue;
+	color: #A66A00;
 	width:100%;
-	border-bottom:1px solid steelblue;
-	margin-bottom: 5pt
+	border-bottom:1px solid #A66A00;
+	margin-bottom: 5pt;
 }
 
 h2 {
@@ -27,7 +36,7 @@ h2 {
 	color: dimgrey;
 	width:100%;
 	border-bottom:1px solid lightgrey;
-	margin-bottom: 2pt
+	margin-bottom: 2pt;
 }
 
 h3 {
@@ -38,50 +47,53 @@ h3 {
 
 input[type="text"] {
 	border: 1px solid dimgrey;
-	background-color: white
+	background-color: white;
 }
 
 input[type="text"]:focus {
-	border: 1px solid steelblue;
+	border: 1px solid #A66A00;
 	background-color: white;
-	box-shadow: inset -6px 0px 0 0px lightsteelblue;
+	box-shadow: inset -6px 0px 0 0px #FFA200;
 	outline: none;
 }
-
 select {
 	border: 1px solid dimgrey;
-	background-color: white
+	background-color: white;
 }
 
 select:focus {
-	border: 1px solid steelblue;
+	border: 1px solid #A66A00;
 	outline: none;
 }
 
-option::selection {
-	background: red; /* Safari */
-}
-
 input[type="submit"] {
-	border: 1px solid steelblue;
-	background-color: lightsteelblue
+	border: 1px solid #A66A00;
+	background-color: #FFA200;
 }
 
 input[type="button"] {
-	border: 1px solid steelblue;
-	background-color: lightsteelblue
+	border: 1px solid #A66A00;
+	background-color: #FFA200;
 }
 
-input[type="button"].close {
-	border: 1px solid steelblue;
-	background-color: lightsteelblue;
-	width:20pt;
-	height:20pt;
+.button_close {
+	border: 1px solid #A66A00;
+	background-color: #FFA200;
+	width:12pt;
+	height:12pt;
+	text-align:center;
+	display:inline-block;
+	cursor:default;
+	vertical-align:middle;
+	text-align:center;
+	font-size:10pt;
+	color:black;
+	font-weight:bold;
 }
 
 div.course {
 	background-color: white;
-	border: 1px solid steelblue;
+	border: 1px solid #A66A00;
 	margin-bottom: 5pt;
 	padding:5pt;
 }
@@ -90,13 +102,14 @@ div.event {
 	background-color: white;
 	border: 1px solid lightgrey;
 	margin-bottom: 5pt;
+	display: block;
 }
 
 div.course_head {
-	background-color: #E4F0FE;
+	background-color: #FFCC73;
 	border: none;
 	text-align: right;
-	padding: 2pt
+	padding: 2pt;
 }
 
 div.error {
@@ -108,30 +121,84 @@ div.error {
 	padding:5pt;
 	margin-left:-5pt;
 	margin-right:-5pt;
-	margin-bottom: 2pt;
+	margin-bottom: 5pt;
 }
 
 .fade {
-	animation:fade 2s;
-	-moz-animation:fade 2s; /* Firefox */
-	-webkit-animation:fade 2s; /* Safari and Chrome */
-	-o-animation:fade 2s; /* Opera */
+	animation:show 2s;
+	-moz-animation:show 2s;
+	-webkit-animation:show 2s;
+	-o-animation:show 2s;
 }
 
-@-moz-keyframes fade /* Firefox */
-{
-0%   {opacity: 0;}
-100% {opacity: 1;}
+.remove {
+	animation:remove 0.5s;
+	-moz-animation:remove 0.5s;
+	-webkit-animation:remove 0.5s;
+	-o-animation:remove 0.5s;
+	border: 1px solid lightgrey;
+	opacity: 0;
+	max-height: 0pt;
+	overflow: hidden;
 }
 
-@-webkit-keyframes fade /* Safari and Chrome */
-{
-0%   {opacity: 0;}
-100% {opacity: 1;}
+.visible {
+	background-color: white;
+	border: 1px solid lightgrey;
+	margin-bottom: 5pt;
+	opacity: 1;
+	display: block;
+	max-height: 5000pt;
+	animation:show 2s;
+	-moz-animation:show 2s;
+	-webkit-animation:show 2s;
+	-o-animation:show 2s;
 }
 
-@-o-keyframes fade /* Opera */
+@keyframes show
 {
-0%   {opacity: 0;}
-100% {opacity: 1;}
+0%   {opacity: 0; max-height: 0pt;}
+100% {opacity: 1; max-height: 5000pt;}
+}
+
+@-moz-keyframes show
+{
+0%   {opacity: 0; max-height: 0pt;}
+100% {opacity: 1; max-height: 5000pt;}
+}
+
+@-webkit-keyframes show
+{
+0%   {opacity: 0; max-height: 0pt;}
+100% {opacity: 1; max-height: 5000pt;}
+}
+
+@-o-keyframes show
+{
+0%   {opacity: 0; max-height: 0pt;}
+100% {opacity: 1; max-height: 5000pt;}
+}
+
+@keyframes remove
+{
+0%   {opacity: 1; max-height: 200pt;}
+100% {opacity: 0; max-height: 0pt;}
+}
+
+@-moz-keyframes remove
+{
+0%   {opacity: 1; max-height: 200pt;}
+100% {opacity: 0; max-height: 0pt;}
+}
+
+@-webkit-keyframes remove
+{
+0%   {opacity: 1; max-height: 200pt;}
+100% {opacity: 0; max-height: 0pt;}
+}
+
+@-o-keyframes remove
+{
+0%   {opacity: 1; max-height: 200pt;}
+100% {opacity: 0; max-height: 0pt;}
 }
