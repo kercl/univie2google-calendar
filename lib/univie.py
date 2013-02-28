@@ -67,9 +67,10 @@ class Event:
 			event = event + "DTEND;TZID=Europe/Vienna:" + self.date_to_str(self.dateStart, True) + "T" + self.time_to_str(self.timeEnd, True) + "Z\n"
 		else:
 			return None
-		if self.frequency != None and self.dateUntil != None and self.recurrence != None:
+		if self.frequency != None and self.recurrence != None:
 			event = event + "RRULE:FREQ=" + self.frequency
-			event = event + ";UNTIL=" + self.date_to_str(self.dateUntil, True) + "T" + self.time_to_str(self.timeEnd, True)
+			if self.dateUntil != None:
+				event = event + ";UNTIL=" + self.date_to_str(self.dateUntil, True) + "T" + self.time_to_str(self.timeEnd, True)
 			event = event + ";BYDAY=" + self.recurrence + "\n"
 		if self.description != None:
 			event = event + "DESCRIPTION:" + self.description + "\n"

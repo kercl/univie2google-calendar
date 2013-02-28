@@ -3,6 +3,7 @@
 import cgi
 import cgitb
 import lib.univie as univie
+import lib.gcalexport as gcalexport
 import layout
 import datetime
 
@@ -33,6 +34,16 @@ def get_cgi_variable(form, name, default=None):
 		return form[name].value
 	else:
 		return default
+
+def gcal(env, form):
+	exp = gcalexport.gcal_exporter()
+	output = "Hallo: " + exp.msg
+	exp.export_to_google_calendar(None)
+	
+	page = {'status': '200 OK',
+			'header': [('Content-type', 'text/html'), ('Content-Length', str(len(output)))],
+			'content': output}
+	return page
 
 def ical(env, form):
 	output = """BEGIN:VCALENDAR
@@ -153,8 +164,9 @@ def main(env, form):
 	output = output + """<input type='hidden' id='omit' name='omit' value='""" + (','.join(omit)) + """' />
 			<input type='hidden' name='courses' value='""" + (','.join(existing_course_numbers)) + """' />
 				<input type='text' name='inp_cnr' />&nbsp;<input type='submit' name='dir' value='Add course' />&nbsp;
-				<input type='submit' name='dir' value='Download iCal' />&nbsp;<input type='button' value='Dismiss' onclick='window.location.href=\"""" + env['SCRIPT_NAME'] + """/\"' />
-			</form><br />"""
+				<input type='submit' name='dir' value='Download iCal' />&nbsp;
+				<input type='button' value='Dismiss' onclick='window.location.href=\"""" + env['SCRIPT_NAME'] + """/\"' />
+			</form><br />""" # TODO: Insert <input type='submit' name='dir' value='To Google calendar' />&nbsp;
 	first = True
 
 	for c in courses:
@@ -177,6 +189,8 @@ def univie2gcal_app(env, start_response):
 	
 	if get_cgi_variable(form, 'dir') == 'Download iCal':
 		page = ical(env, form)
+	elif get_cgi_variable(form, 'dir') == 'To Google calendar':
+		page = gcal(env, form)
 	else:
 		page = main(env, form)
 
