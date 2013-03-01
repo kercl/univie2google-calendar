@@ -3,18 +3,25 @@ div.content {
 	margin-top: 20pt;
 	margin-left: auto;
 	margin-right: auto;
+	margin-bottom: 20pt;
 	width:700pt;
 	background-color: white;
 	padding: 20pt;
+	-moz-box-shadow:inset 4px 4px 36px 10px lightgrey, 4px 4px 15px 5px rgba(0,0,0,0.5);
+	-webkit-box-shadow:inset 4px 4px 36px 10px lightgrey, 4px 4px 15px 5px rgba(0,0,0,0.5);
+	-o-box-shadow:inset 4px 4px 36px 10px lightgrey, 4px 4px 15px 5px rgba(0,0,0,0.5);
+	box-shadow:inset 4px 4px 36px 10px lightgrey, 4px 4px 15px 5px rgba(0,0,0,0.5);
 }
 
 body {
-	background-color: lightgrey;
+	background-color: #454545;
+	background-image: linear-gradient(transparent 50%, rgba(255,255,255,0.1) 50%);
+	background-image: -webkit-linear-gradient(transparent 50%, rgba(255,255,255,0.1) 50%);
+	background-image: -moz-linear-gradient(transparent 50%, rgba(255,255,255,0.1) 50%);
+	background-image: -o-linear-gradient(transparent 50%, rgba(255,255,255,0.1) 50%);
+	background-size: 3px 3px;
 	font-size: 10pt;
 	font-family: sans-serif;
-	-webkit-perspective: 1000;
-	-webkit-backface-visibility: hidden;
-	-webkit-transform:translate3d(0,0,0);
 }
 
 td {
@@ -24,9 +31,9 @@ td {
 h1 {
 	font-size: 10pt;
 	font-weight: bold;
-	color: #A66A00;
+	color: #005502;
 	width:100%;
-	border-bottom:1px solid #A66A00;
+	border-bottom:1px solid #005502;
 	margin-bottom: 5pt;
 }
 
@@ -51,9 +58,9 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-	border: 1px solid #A66A00;
+	border: 1px solid #005502;
 	background-color: white;
-	box-shadow: inset -6px 0px 0 0px #FFA200;
+	box-shadow: inset -6px 0px 0 0px #005A04;
 	outline: none;
 }
 select {
@@ -62,23 +69,59 @@ select {
 }
 
 select:focus {
-	border: 1px solid #A66A00;
+	border: 1px solid #005502;
 	outline: none;
 }
 
 input[type="submit"] {
-	border: 1px solid #A66A00;
-	background-color: #FFA200;
+	border: 1px solid dimgrey;
+	background-color: #D1D1D1;
+	background-size: 3px 3px;
+	-moz-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	-webkit-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	-o-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	box-shadow:inset 0px 0px 8px 3px rgba(0,0,0,0.05);
+	color:black;
+	padding:3pt;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+    transition: background-color 0.3s ease-in-out;
+    -webkit-transition: background-color 0.3s ease-in-out;
+    -moz-transition: background-color 0.3s ease-in-out;
+}
+
+input[type="submit"]:hover {
+	background-color: #E4E4E4;
 }
 
 input[type="button"] {
-	border: 1px solid #A66A00;
-	background-color: #FFA200;
+	border: 1px solid dimgrey;
+	background-color: #D1D1D1;
+	background-size: 3px 3px;
+	-moz-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	-webkit-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	-o-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	box-shadow:inset 0px 0px 8px 3px rgba(0,0,0,0.05);
+	color:black;
+	padding:3pt;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	border-radius: 3px;
+    transition: background-color 0.3s ease-in-out;
+    -webkit-transition: background-color 0.3s ease-in-out;
+    -moz-transition: background-color 0.3s ease-in-out;
+}
+
+input[type="button"]:hover {
+	background-color: #E4E4E4;
 }
 
 .button_close {
-	border: 1px solid #A66A00;
-	background-color: #FFA200;
+	border: 1px solid #005502;
+	background-color: #005A04;
 	width:12pt;
 	height:12pt;
 	text-align:center;
@@ -87,13 +130,13 @@ input[type="button"] {
 	vertical-align:middle;
 	text-align:center;
 	font-size:10pt;
-	color:black;
+	color:white;
 	font-weight:bold;
 }
 
 div.course {
 	background-color: white;
-	border: 1px solid #A66A00;
+	border: 1px solid #005502;
 	margin-bottom: 5pt;
 	padding:5pt;
 }
@@ -106,10 +149,19 @@ div.event {
 }
 
 div.course_head {
-	background-color: #FFCC73;
 	border: none;
 	text-align: right;
 	padding: 2pt;
+	background-color: #CCFFBB;
+	background-image: linear-gradient(transparent 50%, rgba(0,0,0,0.1) 50%);
+	background-image: -webkit-linear-gradient(transparent 50%, rgba(0,0,0,0.1) 50%);
+	background-image: -moz-linear-gradient(transparent 50%, rgba(0,0,0,0.1) 50%);
+	background-image: -o-linear-gradient(transparent 50%, rgba(0,0,0,0.1) 50%);
+	background-size: 3px 3px;
+	-moz-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	-webkit-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	-o-box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
+	box-shadow:inset -20px -10px 20px 10px rgba(0,91,4,0.6);
 }
 
 div.error {
