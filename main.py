@@ -1,5 +1,8 @@
 #-*- coding: utf-8 -*-
 
+try:
+	import univie2gcal
+
 import cgi
 import cgitb
 import lib.univie as univie
@@ -144,7 +147,8 @@ def main(env, form):
 """<!doctype html>
 <html>
 	<head>
-		<link rel='stylesheet' type='text/css' href='""" + PROJECT_ROOT + """/css/main.css' />
+		<link rel='stylesheet' type='text/css' media='handheld' href='""" + PROJECT_ROOT + """/css/main.css' />
+		<link rel='stylesheet' type='text/css' media='handheld' href='""" + PROJECT_ROOT + """/css/mobile.css' />  
 		<script type="text/javascript" src='""" + PROJECT_ROOT + """/main.js'></script>
 		<title>univie2google-calendar</title>
 	</head>
