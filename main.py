@@ -1,8 +1,5 @@
 #-*- coding: utf-8 -*-
 
-try:
-	import univie2gcal
-
 import cgi
 import cgitb
 import lib.univie as univie
