@@ -6,9 +6,10 @@ import string
 import re
 import sys
 from copy import copy
+import datetime
 
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 
 class Event:
 	T_STANDALONE = 1
@@ -106,29 +107,34 @@ class Course:
 	C_DATE_END = 7
 	C_IGNORE_UNTIL_DAY = 8
 	C_TIME = 9
+	C_DATE_INTERVAL = 10
 	C_END = 999
 	
 	C_SPECIAL_NOTE = 998
 	
-	parser_decisions = {-1 : (C_INIT, [0, 14, 20, 18]),
-						 0 : (C_DAY, [1,2,11,4,21,0]),
-						 1 : (C_FREQ, [3]),
-						 2 : (C_DATE, [4, 15, 19, 6, 17, 2, 0]),
-						 3 : ("von", [2]),
+	parser_decisions = {-1 : (C_INIT, [0, 14, 20, 18, 16]),
+						 0 : (C_DAY, [1,2,11,12,4,21,0]),
+						 1 : (C_FREQ, [12]),
+						 2 : (C_DATE, [4, 15, 19, 6, 17, 22, 2, 0]),
 						 4 : (C_TIME_INTERVAL, [9, 10]),
 						 6 : ("bis", [2]),
 						 9 : ("Ort:", [10]),
 						 10: (C_LOCATION, [C_END]),
 						 11: ("jeweils", [12,4]),
-						 12: ("von", [4]),
-						 14: ("Vorbesprechung", [2, 16, 17]),
-						 15: (C_TIME, [2, 10]),
+						 12: ("von", [26, 2, 4]),
+						 14: ("Vorbesprechung", [2, 17, 0, 16]),
+						 15: (C_TIME, [2, 25, 10]),
 						 16: (C_IGNORE_UNTIL_DAY, [C_END]),
 						 17: ("und", [18, 2]),
 						 18: ("Beginn:", [2,16]),
 						 19: ("um", [15]),
 						 20: ("Voraussichtlich", [0]),
 						 21: ("und", [0]),
+						 22: ("in", [23]),
+						 23: ("der", [24]),
+						 24: ("Vorlesung", [15]),
+						 25: ("Uhr", [10]),
+						 26: (C_DATE_INTERVAL, [4, 15, 19, 22]),
 						 C_END: (C_END, [])}
 	
 	def clean(self, arg, first_alphanum = False):
@@ -202,12 +208,59 @@ class Course:
 	def parse_time_interval(self, txt):
 		txt = txt.replace(',', '')
 		s = txt.split('-')
+		if DEBUG_MODE:
+			print("DATE INTERVAL: " + str(s))
 		if len(s) == 2:
 			d1 = self.parse_hh_mm(s[0])
 			d2 = self.parse_hh_mm(s[1])
 			if d1 != None and d2 != None:
-				timeinterval = [d1, d2]
-				return timeinterval
+				return [d1, d2]
+			return None
+		return None
+	
+	def nearest_future_date_occ(self, day, month):
+		curmonth = int(datetime.datetime.now().strftime("%m"))
+		curday = int(datetime.datetime.now().strftime("%d"))
+		if curmonth > month or curday > day:
+			return int(datetime.datetime.now().strftime("%Y")) + 1
+		return int(datetime.datetime.now().strftime("%Y"))
+	
+	def parse_date(self, txt):
+		txt = txt.replace(',', '')
+		m = txt.split('.')
+		if DEBUG_MODE:
+			print("PARSE DATE: "+str(txt)+" - "+str(m)+" "+str(len(m) == 3 and m[2] == '' and txt[-1] == '.'))
+		if len(m) == 3 or (len(m)==4 and m[3] == ''):
+			try:
+				date = {"day" : int(m[0]), "month" : int(m[1]), "year" : int(m[2])}
+				if date['year'] < 1000:
+					date['year'] = 2000 + date['year']
+				return date
+			except ValueError:
+				pass
+		
+		if len(m) == 3 and m[2] == '' and txt[-1] == '.':
+			if DEBUG_MODE:
+				print("DATE PARSED: " + str(m))
+			try:
+				date = {"day" : int(m[0]), "month" : int(m[1])}
+				date['year'] = self.nearest_future_date_occ(date['day'], date['month'])
+				return date
+			except ValueError:
+				pass
+		return None
+	
+	def parse_date_interval(self, txt):
+		txt = txt.replace(',', '')
+		s = txt.split('-')
+		if DEBUG_MODE:
+			print("DATE INTERVAL: " + str(s))
+		if len(s) == 2:
+			d1 = self.parse_date(s[0])
+			d2 = self.parse_date(s[1])
+			print("INTERVALE " + str(d1)+","+str(d2))
+			if d1 != None and d2 != None:
+				return [d1, d2]
 			return None
 		return None
 	
@@ -215,17 +268,9 @@ class Course:
 		txt = tokens[idx]
 		
 		if mtype == self.C_DATE:
-			txt = txt.replace(',', '')
-			m = txt.split('.')
-			if len(m) == 3 or (len(m)==4 and m[3] == ''):
-				try:
-					date = {"day" : int(m[0]), "month" : int(m[1]), "year" : int(m[2])}
-					if date['year'] < 1000:
-						date['year'] = 2000 + date['year']
-				except ValueError:
-					return None
-				return date
-			return None
+			return self.parse_date(txt)
+		elif mtype == self.C_DATE_INTERVAL:
+			return self.parse_date_interval(txt)
 		elif mtype == self.C_TIME_INTERVAL:
 			tint = self.parse_time_interval(txt)
 			if tint == None:
@@ -267,7 +312,12 @@ class Course:
 			if txt in ("14-tg"):
 				return "WEEKLY2"
 		elif type(mtype) is str:
-			return txt[:len(mtype)] == mtype
+			txt = txt.replace(',', "")
+			txt = txt.replace(':', "")
+			txt = txt.replace('.', "")
+			if DEBUG_MODE:
+				print("[TXT COMPARE] " + txt)
+			return txt == mtype
 		return None
 		
 	def is_preposition(self, txt):
@@ -338,6 +388,9 @@ class Course:
 					self.current_meeting[self.C_DAY].append(m)
 				elif state[0] == self.C_TIME:
 					self.current_meeting[self.C_TIME_INTERVAL] = self.extend_time(m)
+				elif state[0] == self.C_DATE_INTERVAL:
+					self.current_meeting[self.C_DATE_BEG].append(m[0])
+					self.current_meeting[self.C_DATE_END] = m[1]
 				elif type(m) is not bool:
 					self.current_meeting[state[0]] = m
 				elif t == 'bis':

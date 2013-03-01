@@ -43,7 +43,7 @@ def html_format_course(course, new=False, omit=[]):
 		
 		output = output + \
 """<div id='""" + str(course.courseId) + " " + str(i) + """' class='event' """ + hiddenstyle + """><div class='course_head'>
-		<span class='button_close' onclick='remove_event(""" + str(course.courseId) + "," + str(i) + """)'>&#10799;</span>
+		<span class='button_close' onclick='remove_event(""" + str(course.courseId) + "," + str(i) + """)'>x</span>
 	</div>""" + title + "<br />" + dateTime + "<br /><table>" + location + description + """</table></div>"""
 
 		i = i + 1
