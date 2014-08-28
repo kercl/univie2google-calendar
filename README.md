@@ -1,6 +1,8 @@
 UNIVIE LECTURES TO GOOGLE-CALENDAR
 ==================================
 
+I discontinued developing this project, since I created a firefox and a chrome extension.
+
 A Web application for creating google calender events, using the google 
 calendar API, and iCal calendars out of UniVie course numbers.
 Requirements: python2.x and all dependencies.
